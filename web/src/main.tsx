@@ -13,10 +13,67 @@ function Arrow({ back = false }: { back?: boolean }) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.5"
+      strokeWidth="1.75"
       aria-hidden="true"
     >
       <path d={back ? "M19 12H5m6-6-6 6 6 6" : "M5 12h14m-6-6 6 6-6 6"} />
+    </svg>
+  );
+}
+
+function SearchIcon() {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className="search-icon"
+    >
+      <circle cx="11" cy="11" r="8" />
+      <path d="m21 21-4.3-4.3" />
+    </svg>
+  );
+}
+
+function ExpandIcon() {
+  return (
+    <svg
+      width="13"
+      height="13"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+    </svg>
+  );
+}
+
+function ExternalLinkIcon() {
+  return (
+    <svg
+      width="13"
+      height="13"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className="external-icon"
+    >
+      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3" />
     </svg>
   );
 }
@@ -151,7 +208,10 @@ function Image({
       onClick={() => onZoom(url, label)}
     >
       <img src={url} alt={label} onError={() => setFailed(true)} />
-      <span>Enlarge image</span>
+      <span className="image-zoom-badge">
+        <ExpandIcon />
+        <span>Enlarge</span>
+      </span>
     </button>
   );
 }
@@ -473,7 +533,8 @@ function App() {
         target="_blank"
         rel="noopener noreferrer"
       >
-        Open {messageId ? "message" : "channel"} in Discord
+        <span>Open {messageId ? "message" : "channel"} in Discord</span>
+        <ExternalLinkIcon />
       </a>
     ) : null;
   }
@@ -517,19 +578,23 @@ function App() {
           </a>
           <nav aria-label="Categories">
             <h2>Categories</h2>
-            {library?.categories.map((item) => (
-              <button
-                key={item.id}
-                className={category === item.id ? "selected" : ""}
-                aria-pressed={category === item.id}
-                onClick={() => {
-                  setCategory(item.id);
-                  navigate();
-                }}
-              >
-                {item.name}
-              </button>
-            ))}
+            {library?.categories.map((item) => {
+              const count = library.strategies.filter((s) => s.categoryId === item.id).length;
+              return (
+                <button
+                  key={item.id}
+                  className={category === item.id ? "selected" : ""}
+                  aria-pressed={category === item.id}
+                  onClick={() => {
+                    setCategory(item.id);
+                    navigate();
+                  }}
+                >
+                  <span className="cat-name">{item.name}</span>
+                  <span className="cat-count">{count}</span>
+                </button>
+              );
+            })}
           </nav>
           <div className="sidebar-bottom">
             <button
@@ -651,8 +716,13 @@ function App() {
                     {strategy.steps.length ? (
                       <section className="walkthrough">
                         <div className="walkthrough-head">
-                          <h2>Walkthrough</h2>
-                          <span>
+                          <div className="walkthrough-title-wrap">
+                            <h2>Walkthrough</h2>
+                            <span className="walkthrough-hint">
+                              {notesSelected ? "Channel notes overview" : `Step ${index + 1} of ${strategy.steps.length}`}
+                            </span>
+                          </div>
+                          <span className="walkthrough-counter">
                             {notesSelected ? "Notes" : `${index + 1} / ${strategy.steps.length}`}
                           </span>
                         </div>
@@ -796,6 +866,7 @@ function App() {
                   <div className="search">
                     <label htmlFor="search">Search strategies and notes</label>
                     <div className="search-input-wrap">
+                      <SearchIcon />
                       <input
                         id="search"
                         type="search"
@@ -855,21 +926,24 @@ function App() {
                           key={item.id}
                           href={`#/strategy/${item.id}`}
                         >
-                          <div>
+                          <div className="row-main">
                             <h2>{item.title}</h2>
                           </div>
                           <div className="row-meta">
                             {item.tags.map((tag) => (
-                              <span className="tag" key={tag}>
+                              <span className={`tag tag-${tag}`} key={tag}>
                                 {tag}
                               </span>
                             ))}
-                            <span>
+                            <span className="step-badge">
                               {item.stepCount
-                                ? `${item.stepCount} steps`
+                                ? `${item.stepCount} ${item.stepCount === 1 ? "step" : "steps"}`
                                 : "Notes only"}
                             </span>
-                            <span className="row-open">Open walkthrough <Arrow /></span>
+                            <span className="row-open">
+                              <span>Open walkthrough</span>
+                              <Arrow />
+                            </span>
                           </div>
                         </a>
                       ))}
