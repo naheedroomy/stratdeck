@@ -1,1 +1,1 @@
-stratdeck-deploy ALL=(root) NOPASSWD: /opt/stratdeck/config/deploy-release ""
+stratdeck-deploy ALL=(root) NOPASSWD: /opt/stratdeck/config/deploy-release "", /opt/stratdeck/config/install-password ""

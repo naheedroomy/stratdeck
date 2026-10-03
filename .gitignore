@@ -13,6 +13,7 @@
 *.sqlite
 *.sqlite-*
 # Generated files
+__pycache__/
 /node_modules/
 /dist/
 /site-dist/

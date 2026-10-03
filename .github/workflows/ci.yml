@@ -61,7 +61,15 @@ jobs:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_USER: ${{ secrets.VPS_USER }}
           VPS_PORT: ${{ secrets.VPS_PORT }}
+          SITE_PASSWORD_RECORD: ${{ secrets.SITE_PASSWORD_RECORD }}
         run: |
           set -euo pipefail
+          umask 077
+          test -n "$SITE_PASSWORD_RECORD"
+          password_file=$(mktemp)
+          trap 'rm -f "$password_file"' EXIT
+          printf '%s' "$SITE_PASSWORD_RECORD" > "$password_file"
+          scp -P "$VPS_PORT" -i "$HOME/.ssh/deploy_key" -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$password_file" "$VPS_USER@$VPS_HOST:/opt/stratdeck/incoming/password.json"
+          ssh -p "$VPS_PORT" -i "$HOME/.ssh/deploy_key" -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$VPS_USER@$VPS_HOST" 'sudo -n /opt/stratdeck/config/install-password'
           scp -P "$VPS_PORT" -i "$HOME/.ssh/deploy_key" -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" release.tar "$VPS_USER@$VPS_HOST:/opt/stratdeck/incoming/release.tar"
           ssh -p "$VPS_PORT" -i "$HOME/.ssh/deploy_key" -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$VPS_USER@$VPS_HOST" 'sudo -n /opt/stratdeck/config/deploy-release'

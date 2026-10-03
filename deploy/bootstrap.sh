@@ -29,6 +29,7 @@ install -o root -g root -m 0644 deploy/Caddyfile /opt/stratdeck/config/Caddyfile
 install -o root -g root -m 0644 Dockerfile /opt/stratdeck/config/Dockerfile
 install -o root -g root -m 0644 deploy/validate_release.py /opt/stratdeck/config/validate_release.py
 install -o root -g root -m 0755 deploy/deploy-release.sh /opt/stratdeck/config/deploy-release
+install -o root -g root -m 0755 deploy/install_password.py /opt/stratdeck/config/install-password
 printf 'PUBLIC_IP=%s\n' "$public_ip" > /opt/stratdeck/config/public.env
 chown root:root /opt/stratdeck/config/public.env && chmod 0644 /opt/stratdeck/config/public.env
 install -o root -g root -m 0440 deploy/stratdeck-deploy.sudoers /etc/sudoers.d/stratdeck-deploy
