@@ -582,23 +582,19 @@ function App() {
           </a>
           <nav aria-label="Categories">
             <h2>Categories</h2>
-            {library?.categories.map((item) => {
-              const count = library.strategies.filter((s) => s.categoryId === item.id).length;
-              return (
-                <button
-                  key={item.id}
-                  className={category === item.id ? "selected" : ""}
-                  aria-pressed={category === item.id}
-                  onClick={() => {
-                    setCategory(item.id);
-                    navigate();
-                  }}
-                >
-                  <span className="cat-name">{item.name}</span>
-                  <span className="cat-count">{count}</span>
-                </button>
-              );
-            })}
+            {library?.categories.map((item) => (
+              <button
+                key={item.id}
+                className={category === item.id ? "selected" : ""}
+                aria-pressed={category === item.id}
+                onClick={() => {
+                  setCategory(item.id);
+                  navigate();
+                }}
+              >
+                {item.name}
+              </button>
+            ))}
           </nav>
           <div className="sidebar-bottom">
             <button

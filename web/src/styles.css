@@ -927,11 +927,10 @@ button.primary { background: var(--accent-fill); border-color: var(--accent-fill
 .sidebar { border-right: 1px solid var(--line); }
 .sidebar .wordmark { max-width: 150px; font-size: 22px; font-weight: 750; letter-spacing: -0.025em; line-height: 1.15; }
 .sidebar nav h2 { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #767c82; margin: 0 12px 14px; }
-.sidebar nav button { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid transparent; color: #b2b1ad; font-size: 14px; font-weight: 500; transition: all 120ms ease-out; }
+.sidebar nav button { display: block; text-align: left; width: 100%; padding: 10px 14px; border-radius: 6px; border: 1px solid transparent; color: #b2b1ad; font-size: 14px; font-weight: 500; line-height: 1.35; transition: all 120ms ease-out; }
 .sidebar nav button:hover { background: #1c1f22; color: var(--ink); }
 .sidebar nav button.selected { background: rgba(241, 138, 125, 0.12); color: #ffb8ad; border-color: rgba(241, 138, 125, 0.25); box-shadow: inset 3px 0 0 var(--accent); font-weight: 600; }
-.sidebar nav button .cat-count { font-size: 11px; font-variant-numeric: tabular-nums; padding: 2px 7px; border-radius: 9999px; background: rgba(255, 255, 255, 0.06); color: var(--muted); border: 1px solid rgba(255, 255, 255, 0.06); }
-.sidebar nav button.selected .cat-count { background: rgba(241, 138, 125, 0.2); color: #ffb8ad; border-color: rgba(241, 138, 125, 0.3); }
+
 
 .topbar > span:first-child { color: #ddd9d3; font-weight: 600; }
 .library-heading h1 { font-size: 32px; font-weight: 750; letter-spacing: -0.02em; }
@@ -1054,32 +1053,17 @@ fieldset button.active { background: #342724; border-color: #67413a; color: #ffb
     width: auto;
     white-space: nowrap;
     min-height: 40px;
-    padding: 8px 14px;
+    padding: 8px 16px;
     border-radius: 9999px;
     background: #1e2124;
     border: 1px solid var(--line);
     font-size: 13.5px;
     font-weight: 500;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .sidebar nav button .cat-count {
-    font-size: 11px;
-    font-variant-numeric: tabular-nums;
-    padding: 1px 6px;
-    border-radius: 9999px;
-    background: rgba(255, 255, 255, 0.08);
-    color: var(--muted);
   }
   .sidebar nav button.selected {
     background: rgba(241, 138, 125, 0.15);
     color: #ffb3a6;
     border-color: rgba(241, 138, 125, 0.35);
-  }
-  .sidebar nav button.selected .cat-count {
-    background: rgba(241, 138, 125, 0.25);
-    color: #ffb3a6;
   }
 
   /* Topbar & Main Container */
