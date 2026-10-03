@@ -97,6 +97,44 @@ function ChevronDown() {
   );
 }
 
+function MenuIcon() {
+  return (
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="4" y1="12" x2="20" y2="12" />
+      <line x1="4" y1="18" x2="20" y2="18" />
+    </svg>
+  );
+}
+
+function CloseIcon() {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M18 6 6 18M6 6l12 12" />
+    </svg>
+  );
+}
+
 function route() {
   const parts = window.location.hash.split("/");
   return {
@@ -330,10 +368,20 @@ function App() {
   const [updated, setUpdated] = useState(false);
   const [unavailable, setUnavailable] = useState(false);
   const [zoom, setZoom] = useState<{ url: string; label: string } | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
   const strategyRef = useRef(strategy);
   strategyRef.current = strategy;
   const activeStepRef = useRef<HTMLAnchorElement>(null);
   const touchStartRef = useRef<{ x: number; y: number; time: number } | null>(null);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMenuOpen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [menuOpen]);
 
   useEffect(() => {
     if (activeStepRef.current) {
@@ -381,6 +429,7 @@ function App() {
     const hash = () => {
       setLocation(route());
       setZoom(null);
+      setMenuOpen(false);
     };
     const expire = () => {
       setAuthenticated(false);
@@ -389,6 +438,7 @@ function App() {
       setStrategy(null);
       setResults([]);
       setZoom(null);
+      setMenuOpen(false);
     };
     window.addEventListener("hashchange", hash);
     window.addEventListener("session-expired", expire);
@@ -583,8 +633,17 @@ function App() {
       />
     );
   const currentCategory = strategy?.categoryId || category;
+  const currentSide = strategy?.tags.includes("attack")
+    ? "attack"
+    : strategy?.tags.includes("defense")
+      ? "defense"
+      : "";
   const categoryStrategies = (
-    library?.strategies.filter((item) => item.categoryId === currentCategory) ?? []
+    library?.strategies.filter((item) => {
+      if (item.categoryId !== currentCategory) return false;
+      if (currentSide && !item.tags.includes(currentSide)) return false;
+      return true;
+    }) ?? []
   ).sort((a, b) => a.position - b.position);
   const visible = (query.trim() ? results : (library?.strategies ?? [])).filter(
     (item) =>
@@ -604,10 +663,33 @@ function App() {
         Skip to content
       </a>
       <div className={`app-shell ${location.strategy ? "in-strategy" : "in-library"}`}>
-        <aside className="sidebar">
-          <a className="wordmark" href="#/">
-            Stratdeck
-          </a>
+        {menuOpen && (
+          <div
+            className="drawer-backdrop"
+            onClick={() => setMenuOpen(false)}
+            aria-hidden="true"
+          />
+        )}
+        <aside
+          className={`sidebar ${menuOpen ? "open" : ""}`}
+          id="sidebar-nav"
+          role={menuOpen ? "dialog" : undefined}
+          aria-modal={menuOpen ? "true" : undefined}
+          aria-label="Navigation sidebar"
+        >
+          <div className="sidebar-header">
+            <a className="wordmark" href="#/" onClick={() => setMenuOpen(false)}>
+              Stratdeck
+            </a>
+            <button
+              type="button"
+              className="drawer-close-btn"
+              onClick={() => setMenuOpen(false)}
+              aria-label="Close navigation menu"
+            >
+              <CloseIcon />
+            </button>
+          </div>
           <nav aria-label="Categories">
             <h2>Categories</h2>
             {library?.categories.map((item) => (
@@ -618,6 +700,7 @@ function App() {
                 onClick={() => {
                   setCategory(item.id);
                   navigate();
+                  setMenuOpen(false);
                 }}
               >
                 {item.name}
@@ -635,6 +718,7 @@ function App() {
                   setResults([]);
                   setQuery("");
                   setZoom(null);
+                  setMenuOpen(false);
                 } catch {
                   setLoadError(
                     "Unable to sign out. Check your connection and try again.",
@@ -647,6 +731,35 @@ function App() {
           </div>
         </aside>
         <div className="workspace">
+          <header className="mobile-header">
+            <div className="mobile-header-left">
+              <button
+                type="button"
+                className="menu-toggle-btn"
+                onClick={() => setMenuOpen(true)}
+                aria-label="Open navigation menu"
+                aria-expanded={menuOpen}
+                aria-controls="sidebar-nav"
+              >
+                <MenuIcon />
+              </button>
+              <a className="wordmark" href="#/" onClick={() => setMenuOpen(false)}>
+                Stratdeck
+              </a>
+            </div>
+            <div className="mobile-header-right">
+              {location.strategy ? (
+                <a href="#/" className="mobile-header-link" aria-label="Back to playbook">
+                  <Arrow back />
+                  <span>Playbook</span>
+                </a>
+              ) : (
+                <span className="mobile-header-pill">
+                  {library?.categories.find((item) => item.id === category)?.name ?? "Playbook"}
+                </span>
+              )}
+            </div>
+          </header>
           <main id="main" tabIndex={-1}>
             {loadError && (
               <div className="error" role="alert">
@@ -689,9 +802,15 @@ function App() {
                                   ? "Defense"
                                   : "";
                               const prefix = sideTag ? `[${sideTag}] ` : "";
+                              const cleanTitle = item.title.replace(
+                                /^(attack|defense)\s*[-_.:·/]?\s*/i,
+                                "",
+                              );
+                              const titleToDisplay =
+                                cleanTitle.length > 0 ? cleanTitle : item.title;
                               return (
                                 <option key={item.id} value={item.id}>
-                                  {prefix}{item.title}
+                                  {prefix}{titleToDisplay}
                                 </option>
                               );
                             })}

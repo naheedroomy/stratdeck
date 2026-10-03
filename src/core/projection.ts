@@ -1,7 +1,24 @@
 import {createHash} from 'node:crypto';
 import type {SourceMessage, Strategy} from './types.js';
 
-export function displayTitle(sourceName:string):string { return sourceName.normalize('NFKC').trim().replace(/^(attack|att|defense|def)(?=$|[^\p{L}\p{N}])/iu,prefix=>/^att/i.test(prefix)?'Attack':'Defense').replace(/[-_]+/g,' ').trim().replace(/\s+/g,' ').replace(/\b\p{L}/gu,c=>c.toLocaleUpperCase()); }
+export function displayTitle(sourceName:string):string {
+  const norm = sourceName.normalize('NFKC').trim();
+  const match = norm.match(/^(attack|att|defense|def)(?=$|[^\p{L}\p{N}])/iu);
+  let cleaned = norm;
+  if (match) {
+    const remainder = norm.slice(match[0].length).replace(/^[\s\-_.:·/]+/, '').trim();
+    if (remainder.length > 0) {
+      cleaned = remainder;
+    } else {
+      cleaned = /^att/i.test(match[1]!) ? 'Attack' : 'Defense';
+    }
+  }
+  return cleaned
+    .replace(/[-_]+/g, ' ')
+    .trim()
+    .replace(/\s+/g, ' ')
+    .replace(/\b\p{L}/gu, c => c.toLocaleUpperCase());
+}
 export function deriveTags(name:string):('attack'|'defense')[] {const prefix=name.normalize('NFKC').trim().toLowerCase().match(/^(attack|att|defense|def)(?=$|[^\p{L}\p{N}])/u)?.[1];return prefix? [prefix.startsWith('att')?'attack':'defense']:[];}
 export function isEligibleMessage(message:SourceMessage){return !message.authorBot&&!message.webhookId;}
 export function projectStrategy(input:{channelId:string;categoryId:string;position?:number;sourceName:string;messages:SourceMessage[];publishedAt?:string;warnings?:string[]}):Strategy {
