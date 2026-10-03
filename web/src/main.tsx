@@ -227,13 +227,17 @@ function Zoom({
   const touchYStart = useRef<number | null>(null);
 
   useEffect(() => {
-    if (image) {
+    if (image && dialog.current && !dialog.current.open) {
       setScaled(false);
-      dialog.current?.showModal();
-    } else {
-      dialog.current?.close();
+      try {
+        dialog.current.showModal();
+      } catch {
+        // Fallback if dialog.showModal is not available
+      }
     }
   }, [image]);
+
+  if (!image) return null;
 
   const handleTouchStart = (e: React.TouchEvent) => {
     const touch = e.touches[0];
@@ -261,11 +265,11 @@ function Zoom({
       onClick={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
-      aria-label={image?.label ?? "Image viewer"}
+      aria-label={image.label}
     >
       <div className="zoom-handle" aria-hidden="true" />
       <div className="zoom-bar">
-        <span>{image?.label}</span>
+        <span>{image.label}</span>
         <div className="zoom-actions">
           <button
             type="button"
@@ -275,13 +279,13 @@ function Zoom({
           >
             {scaled ? "Fit" : "Zoom"}
           </button>
-          <button autoFocus onClick={onClose}>
+          <button type="button" onClick={onClose}>
             Close image <kbd>Esc</kbd>
           </button>
         </div>
       </div>
       <div className="zoom-body" onClick={() => setScaled((prev) => !prev)}>
-        {image && <img src={image.url} alt={image.label} />}
+        <img src={image.url} alt={image.label} />
       </div>
     </dialog>
   );

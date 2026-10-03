@@ -641,7 +641,11 @@ fieldset button.active {
   color: var(--muted);
   margin-top: 40px;
 }
-.zoom {
+dialog:not([open]),
+.zoom:not([open]) {
+  display: none !important;
+}
+.zoom[open] {
   background: #191b1d;
   color: #17191b;
   border: 0;
@@ -991,7 +995,7 @@ fieldset button.active { background: #342724; border-color: #67413a; color: #ffb
 .step-notes h3 { font-size: 16px; font-weight: 650; letter-spacing: -0.01em; color: #f0eeea; margin-bottom: 16px; }
 .step-notes .source { margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--line-subtle); width: 100%; justify-content: space-between; box-sizing: border-box; }
 
-.zoom { background: #0f1114; color: #f0eeea; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 16px 20px 20px; max-width: 96vw; max-height: 94dvh; width: fit-content; box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7); }
+.zoom[open] { background: #0f1114; color: #f0eeea; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 16px 20px 20px; max-width: 96vw; max-height: 94dvh; width: fit-content; box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7); }
 .zoom button { background: #23272b; border-color: #3d4248; color: #f0eeea; font-size: 13px; padding: 8px 14px; min-height: 38px; }
 .zoom button:hover { background: #2d3237; border-color: #555b62; }
 .zoom kbd { font: inherit; font-size: 11px; font-weight: 600; color: #9ba0a6; background: rgba(255, 255, 255, 0.08); padding: 2px 5px; border-radius: 3px; margin-left: 8px; border: 1px solid rgba(255, 255, 255, 0.1); }
@@ -1299,7 +1303,10 @@ fieldset button.active { background: #342724; border-color: #67413a; color: #ffb
   }
 
   /* Fullscreen Zoom on Mobile */
-  .zoom {
+  .zoom:not([open]) {
+    display: none !important;
+  }
+  .zoom[open] {
     position: fixed;
     inset: 0;
     max-width: 100vw;
