@@ -394,6 +394,14 @@ function App() {
   }, [location.step]);
 
   const onWalkthroughTouchStart = (e: React.TouchEvent) => {
+    // Prevent accidental step changes while scrolling reading notes or interacting with inputs/dock
+    if (
+      (e.target as HTMLElement).closest(
+        ".step-notes, .mobile-step-dock, select, input, textarea",
+      )
+    ) {
+      return;
+    }
     if (e.touches.length === 1 && e.touches[0]) {
       const touch = e.touches[0];
       touchStartRef.current = {
@@ -413,7 +421,8 @@ function App() {
     const dt = Date.now() - touchStartRef.current.time;
     touchStartRef.current = null;
 
-    if (dt < 600 && Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.3) {
+    // Require an intentional horizontal swipe: duration < 500ms, travel > 70px, and horizontal travel at least 2x vertical
+    if (dt < 500 && Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy) * 2.0) {
       if (dx < 0) {
         changeStep(1);
       } else {
