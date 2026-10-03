@@ -78,6 +78,25 @@ function ExternalLinkIcon() {
   );
 }
 
+function ChevronDown() {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className="chevron-down"
+    >
+      <path d="m6 9 6 6 6-6" />
+    </svg>
+  );
+}
+
 function route() {
   const parts = window.location.hash.split("/");
   return {
@@ -537,7 +556,12 @@ function App() {
         target="_blank"
         rel="noopener noreferrer"
       >
-        <span>Open {messageId ? "message" : "channel"} in Discord</span>
+        <span className="source-label-full">
+          Open {messageId ? "message" : "channel"} in Discord
+        </span>
+        <span className="source-label-short">
+          {messageId ? "Message" : "Discord"}
+        </span>
         <ExternalLinkIcon />
       </a>
     ) : null;
@@ -558,6 +582,10 @@ function App() {
         }}
       />
     );
+  const currentCategory = strategy?.categoryId || category;
+  const categoryStrategies = (
+    library?.strategies.filter((item) => item.categoryId === currentCategory) ?? []
+  ).sort((a, b) => a.position - b.position);
   const visible = (query.trim() ? results : (library?.strategies ?? [])).filter(
     (item) =>
       item.categoryId === category &&
@@ -628,9 +656,53 @@ function App() {
             {!library && !loadError && <p role="status">Loading strategies…</p>}
             {location.strategy ? (
               <>
-                <a href="#/" className="back">
-                  <Arrow back /> Back to strategies
-                </a>
+                <div className="strategy-top-nav">
+                  <div className="strategy-nav-left">
+                    <a href="#/" className="back" aria-label="Back to playbook">
+                      <Arrow back />
+                      <span>Playbook</span>
+                    </a>
+                    {categoryStrategies.length > 1 && (
+                      <div className="strategy-switcher">
+                        <label
+                          htmlFor="strategy-select"
+                          className="visually-hidden"
+                        >
+                          Switch strategy in this category
+                        </label>
+                        <div className="switcher-wrapper">
+                          <select
+                            id="strategy-select"
+                            className="strategy-select"
+                            value={strategy?.id ?? location.strategy}
+                            onChange={(e) => {
+                              if (e.target.value && e.target.value !== strategy?.id) {
+                                navigate(e.target.value);
+                              }
+                            }}
+                            aria-label="Switch strategy in this category"
+                          >
+                            {categoryStrategies.map((item) => {
+                              const sideTag = item.tags.includes("attack")
+                                ? "Attack"
+                                : item.tags.includes("defense")
+                                  ? "Defense"
+                                  : "";
+                              const prefix = sideTag ? `[${sideTag}] ` : "";
+                              return (
+                                <option key={item.id} value={item.id}>
+                                  {prefix}{item.title}
+                                </option>
+                              );
+                            })}
+                          </select>
+                          <ChevronDown />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  {sourceLink()}
+                </div>
                 {strategyBusy && <p role="status">Loading walkthrough…</p>}
                 {strategyError && (
                   <Notice>
@@ -646,17 +718,14 @@ function App() {
                 {strategy && !unavailable && (
                   <article>
                     <div className="strategy-heading">
-                      <div>
-                        <div className="breadcrumb">
-                          {
-                            library?.categories.find(
-                              (item) => item.id === strategy.categoryId,
-                            )?.name
-                          }
-                        </div>
-                        <h1>{strategy.title}</h1>
+                      <div className="breadcrumb">
+                        {
+                          library?.categories.find(
+                            (item) => item.id === strategy.categoryId,
+                          )?.name
+                        }
                       </div>
-                      {sourceLink()}
+                      <h1>{strategy.title}</h1>
                     </div>
                     {updated && (
                       <Notice>
