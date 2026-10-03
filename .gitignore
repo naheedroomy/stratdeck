@@ -1,0 +1,22 @@
+# Credentials and machine-local settings
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.ssh/
+# Private team content and persistent runtime state
+/data/
+/exports/
+/backups/
+/public/media/
+*.sqlite
+*.sqlite-*
+# Generated files
+/node_modules/
+/dist/
+/site-dist/
+/coverage/
+.pi/
+.DS_Store
+*.log

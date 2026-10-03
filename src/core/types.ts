@@ -1,0 +1,12 @@
+import { z } from 'zod';
+
+export const AttachmentSchema = z.object({id:z.string(), filename:z.string(), contentType:z.string().nullable(), size:z.number().int().nonnegative(), width:z.number().int().positive().optional(), height:z.number().int().positive().optional(), contentHash:z.string().regex(/^[a-f0-9]{64}$/).optional(), storageKey:z.string().regex(/^images\/[a-f0-9]{64}\.(png|jpg|webp)$/).optional(), url:z.string().url().optional(), description:z.string().nullable().optional()});
+export const SourceMessageSchema = z.object({id:z.string(), channelId:z.string(), createdAt:z.string().datetime(), editedAt:z.string().datetime().nullable(), authorId:z.string(), authorBot:z.boolean(), webhookId:z.string().nullable(), content:z.string(), attachments:z.array(AttachmentSchema)});
+export const ImageExportSchema = z.object({attachmentId:z.string(),file:z.string().regex(/^images\/[a-f0-9]{64}\.(png|jpg|webp)$/)});
+export const NoteSchema = z.object({messageId:z.string(),markdown:z.string()});
+export const StrategySchema = z.object({id:z.string(),categoryId:z.string(),position:z.number().int(),sourceName:z.string(),title:z.string(),tags:z.array(z.enum(['attack','defense'])),overview:z.array(NoteSchema),steps:z.array(z.object({id:z.string(),messageIds:z.array(z.string()),notes:z.array(NoteSchema),images:z.array(ImageExportSchema)})),sourceMessages:z.array(SourceMessageSchema),revision:z.string().regex(/^[a-f0-9]{64}$/),sourceUpdatedAt:z.string().datetime().nullable(),syncStatus:z.enum(['current','stale','unavailable']),publishedAt:z.string().datetime(),warnings:z.array(z.string()),available:z.boolean()});
+export const ExportSchema = z.object({schemaVersion:z.literal(1),exportedAt:z.string().datetime(),guild:z.object({id:z.string(),name:z.string()}),categories:z.array(z.object({id:z.string(),name:z.string(),position:z.number().int()})),strategies:z.array(StrategySchema)});
+export type SourceMessage=z.infer<typeof SourceMessageSchema>; export type Strategy=z.infer<typeof StrategySchema>; export type PlaybookExport=z.infer<typeof ExportSchema>;
+export interface Category {id:string;name:string;position:number}
+export interface StrategySummary {id:string;categoryId:string;position:number;sourceName:string;title:string;syncStatus:'current'|'stale';tags:('attack'|'defense')[];revision:string;overview:{messageId:string;markdown:string}[];stepCount:number}
+export interface Channel {id:string;categoryId:string|null;name:string;position:number}

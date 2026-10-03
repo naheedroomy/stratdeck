@@ -1,0 +1,179 @@
+{
+  "schemaVersion": 1,
+  "exportedAt": "2025-01-01T00:00:00.000Z",
+  "guild": {
+    "id": "123456789012345670",
+    "name": "Fixture Guild"
+  },
+  "categories": [
+    {
+      "id": "123456789012345679",
+      "name": "Ascent",
+      "position": 0
+    }
+  ],
+  "strategies": [
+    {
+      "id": "123456789012345678",
+      "categoryId": "123456789012345679",
+      "position": 0,
+      "sourceName": "attack-a-default",
+      "title": "Attack A Default",
+      "tags": [
+        "attack"
+      ],
+      "overview": [
+        {
+          "messageId": "100000000000000001",
+          "markdown": "Opening explanation."
+        },
+        {
+          "messageId": "100000000000000002",
+          "markdown": "Second overview note."
+        }
+      ],
+      "steps": [
+        {
+          "id": "100000000000000003",
+          "messageIds": [
+            "100000000000000003",
+            "100000000000000004"
+          ],
+          "notes": [
+            {
+              "messageId": "100000000000000003",
+              "markdown": "First setup."
+            },
+            {
+              "messageId": "100000000000000004",
+              "markdown": "Rotate after the smoke."
+            }
+          ],
+          "images": [
+            {
+              "attachmentId": "200000000000000001",
+              "file": "images/2f977baaaeb276bf5e737d9904fc34342ee9f62e5cca8f58b861ad19df271542.png"
+            },
+            {
+              "attachmentId": "200000000000000002",
+              "file": "images/43bd678c05f01b3c6ff6a713589df9eb59cf4c8587f4fe5c796d1e39d6a7eb74.jpg"
+            }
+          ]
+        },
+        {
+          "id": "100000000000000005",
+          "messageIds": [
+            "100000000000000005"
+          ],
+          "notes": [
+            {
+              "messageId": "100000000000000005",
+              "markdown": "Finish on site."
+            }
+          ],
+          "images": [
+            {
+              "attachmentId": "200000000000000003",
+              "file": "images/2f977baaaeb276bf5e737d9904fc34342ee9f62e5cca8f58b861ad19df271542.png"
+            }
+          ]
+        }
+      ],
+      "sourceMessages": [
+        {
+          "id": "100000000000000001",
+          "channelId": "123456789012345678",
+          "createdAt": "2025-01-01T00:00:01.000Z",
+          "editedAt": null,
+          "authorId": "123456789012345600",
+          "authorBot": false,
+          "webhookId": null,
+          "content": "Opening explanation.",
+          "attachments": []
+        },
+        {
+          "id": "100000000000000002",
+          "channelId": "123456789012345678",
+          "createdAt": "2025-01-01T00:00:02.000Z",
+          "editedAt": null,
+          "authorId": "123456789012345600",
+          "authorBot": false,
+          "webhookId": null,
+          "content": "Second overview note.",
+          "attachments": []
+        },
+        {
+          "id": "100000000000000003",
+          "channelId": "123456789012345678",
+          "createdAt": "2025-01-01T00:00:03.000Z",
+          "editedAt": null,
+          "authorId": "123456789012345600",
+          "authorBot": false,
+          "webhookId": null,
+          "content": "First setup.",
+          "attachments": [
+            {
+              "id": "200000000000000001",
+              "filename": "lineup.png",
+              "contentType": "image/png",
+              "size": 300,
+              "storageKey": "images/2f977baaaeb276bf5e737d9904fc34342ee9f62e5cca8f58b861ad19df271542.png",
+              "contentHash": "2f977baaaeb276bf5e737d9904fc34342ee9f62e5cca8f58b861ad19df271542",
+              "width": 8,
+              "height": 6
+            },
+            {
+              "id": "200000000000000002",
+              "filename": "site.jpg",
+              "contentType": "image/jpeg",
+              "size": 300,
+              "storageKey": "images/43bd678c05f01b3c6ff6a713589df9eb59cf4c8587f4fe5c796d1e39d6a7eb74.jpg",
+              "contentHash": "43bd678c05f01b3c6ff6a713589df9eb59cf4c8587f4fe5c796d1e39d6a7eb74",
+              "width": 8,
+              "height": 6
+            }
+          ]
+        },
+        {
+          "id": "100000000000000004",
+          "channelId": "123456789012345678",
+          "createdAt": "2025-01-01T00:00:04.000Z",
+          "editedAt": null,
+          "authorId": "123456789012345600",
+          "authorBot": false,
+          "webhookId": null,
+          "content": "Rotate after the smoke.",
+          "attachments": []
+        },
+        {
+          "id": "100000000000000005",
+          "channelId": "123456789012345678",
+          "createdAt": "2025-01-01T00:00:05.000Z",
+          "editedAt": null,
+          "authorId": "123456789012345600",
+          "authorBot": false,
+          "webhookId": null,
+          "content": "Finish on site.",
+          "attachments": [
+            {
+              "id": "200000000000000003",
+              "filename": "lineup.png",
+              "contentType": "image/png",
+              "size": 300,
+              "storageKey": "images/2f977baaaeb276bf5e737d9904fc34342ee9f62e5cca8f58b861ad19df271542.png",
+              "contentHash": "2f977baaaeb276bf5e737d9904fc34342ee9f62e5cca8f58b861ad19df271542",
+              "width": 8,
+              "height": 6
+            }
+          ]
+        }
+      ],
+      "revision": "04eaf44bc387d458d300aa719e23e26a18d0478338bb32d70651b96efc855c47",
+      "sourceUpdatedAt": "2025-01-01T00:00:05.000Z",
+      "syncStatus": "current",
+      "publishedAt": "2025-01-01T00:00:00.000Z",
+      "warnings": [],
+      "available": true
+    }
+  ]
+}

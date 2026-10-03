@@ -1,0 +1,4 @@
+{
+  "compilerOptions": {"target":"ES2023","module":"NodeNext","moduleResolution":"NodeNext","strict":true,"esModuleInterop":true,"skipLibCheck":true,"outDir":"dist","rootDir":".","types":["node","vite/client"],"noUncheckedIndexedAccess":true,"resolveJsonModule":true,"jsx":"react-jsx"},
+  "include":["src/**/*","test/**/*.ts","vite.config.ts","web/**/*"]
+}

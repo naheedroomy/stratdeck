@@ -1,0 +1,1 @@
+stratdeck-deploy ALL=(root) NOPASSWD: /opt/stratdeck/config/deploy-release ""
