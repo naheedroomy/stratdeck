@@ -53,4 +53,8 @@ RELEASE_ID="$previous" docker compose --project-name stratdeck --env-file /opt/s
 
 Prefer selecting a specific prior release by directory name after inspecting `/opt/stratdeck/releases/`; the example ordering is not authoritative. To inspect status/logs, use `docker compose --project-name stratdeck --env-file /opt/stratdeck/config/public.env -f /opt/stratdeck/config/compose.yaml ps` and `logs --tail=100`. Never run `docker system prune` as part of Stratdeck recovery. Back up `/opt/stratdeck/shared/data` and Caddy's internal CA state (`caddy-data`) together under your protected backup policy. Restore database/media as a consistent pair. Password rotation is performed by replacing the scrypt JSON privately and restarting the app; sessions are invalidated by password version change.
 
-No live VPS, SSH, DNS, firewall, HTTPS browser trust, Discord connection, restore, or production deployment was performed during this implementation. Confirm these on the actual host before enabling CI deployment.
+## Verified deployment
+
+The initial deployment was verified on 2026-10-03: GitHub Actions built and deployed the tested release; both Stratdeck containers are running, the app is healthy, and HTTPS works with the internal CA. Discord sync imported two selected categories and 19 strategies. Protected session, library, status, search, strategy and media endpoints were checked using a temporary administrator-created QA session, then that session was revoked. A real browser loaded the walkthrough and image without horizontal overflow. The existing port-80 website remained healthy and returned HTTP 200.
+
+The owner's password record was preserved; the example password from the original specification is not assumed to be the actual password. Browser trust still requires accepting or installing the internal CA. Backup restoration and host-failure recovery have not been simulated.
