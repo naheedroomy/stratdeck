@@ -7,32 +7,16 @@ import "./styles.css";
 
 function Arrow({ back = false }: { back?: boolean }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      aria-hidden="true"
+    >
       <path d={back ? "M19 12H5m6-6-6 6 6 6" : "M5 12h14m-6-6 6 6-6 6"} />
-    </svg>
-  );
-}
-
-function MenuIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-      <path d="M4 6h16M4 12h16M4 18h16" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function CloseIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-      <path d="M6 6l12 12M6 18L18 6" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function ChevronDown() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-      <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -202,7 +186,7 @@ function Zoom({
     if (!touch) return;
     const deltaY = touch.clientY - touchYStart.current;
     touchYStart.current = null;
-    if (deltaY > 70) {
+    if (deltaY > 60) {
       onClose();
     }
   };
@@ -221,26 +205,18 @@ function Zoom({
     >
       <div className="zoom-handle" aria-hidden="true" />
       <div className="zoom-bar">
-        <span className="zoom-title">{image?.label}</span>
+        <span>{image?.label}</span>
         <div className="zoom-actions">
           <button
             type="button"
             className="zoom-scale-btn"
             onClick={() => setScaled((prev) => !prev)}
-            aria-label={scaled ? "Reset zoom" : "Magnify image"}
+            aria-label={scaled ? "Fit to screen" : "Zoom image"}
           >
             {scaled ? "Fit" : "Zoom"}
           </button>
-          <button
-            type="button"
-            className="zoom-close-btn"
-            autoFocus
-            onClick={onClose}
-            aria-label="Close image"
-          >
-            <CloseIcon />
-            <span className="close-text">Close</span>
-            <kbd>Esc</kbd>
+          <button autoFocus onClick={onClose}>
+            Close image <kbd>Esc</kbd>
           </button>
         </div>
       </div>
@@ -271,37 +247,10 @@ function App() {
   const [updated, setUpdated] = useState(false);
   const [unavailable, setUnavailable] = useState(false);
   const [zoom, setZoom] = useState<{ url: string; label: string } | null>(null);
-  const [drawerOpen, setDrawerOpen] = useState(false);
   const strategyRef = useRef(strategy);
   strategyRef.current = strategy;
   const activeStepRef = useRef<HTMLAnchorElement>(null);
   const touchStartRef = useRef<{ x: number; y: number; time: number } | null>(null);
-
-  useEffect(() => {
-    void api("/session")
-      .then(() => setAuthenticated(true))
-      .catch(() => setAuthenticated(false));
-    const hash = () => {
-      setLocation(route());
-      setZoom(null);
-      setDrawerOpen(false);
-    };
-    const expire = () => {
-      setAuthenticated(false);
-      setExpired(true);
-      setLibrary(null);
-      setStrategy(null);
-      setResults([]);
-      setZoom(null);
-      setDrawerOpen(false);
-    };
-    window.addEventListener("hashchange", hash);
-    window.addEventListener("session-expired", expire);
-    return () => {
-      window.removeEventListener("hashchange", hash);
-      window.removeEventListener("session-expired", expire);
-    };
-  }, []);
 
   useEffect(() => {
     if (activeStepRef.current) {
@@ -312,34 +261,6 @@ function App() {
       });
     }
   }, [location.step]);
-
-  useEffect(() => {
-    if (drawerOpen) {
-      document.body.classList.add("drawer-open");
-    } else {
-      document.body.classList.remove("drawer-open");
-    }
-    return () => {
-      document.body.classList.remove("drawer-open");
-    };
-  }, [drawerOpen]);
-
-  const handleSignOut = async () => {
-    try {
-      await api("/session", { method: "DELETE" });
-      setAuthenticated(false);
-      setLibrary(null);
-      setStrategy(null);
-      setResults([]);
-      setQuery("");
-      setZoom(null);
-      setDrawerOpen(false);
-    } catch {
-      setLoadError(
-        "Unable to sign out. Check your connection and try again.",
-      );
-    }
-  };
 
   const onWalkthroughTouchStart = (e: React.TouchEvent) => {
     if (e.touches.length === 1 && e.touches[0]) {
@@ -369,6 +290,30 @@ function App() {
       }
     }
   };
+
+  useEffect(() => {
+    void api("/session")
+      .then(() => setAuthenticated(true))
+      .catch(() => setAuthenticated(false));
+    const hash = () => {
+      setLocation(route());
+      setZoom(null);
+    };
+    const expire = () => {
+      setAuthenticated(false);
+      setExpired(true);
+      setLibrary(null);
+      setStrategy(null);
+      setResults([]);
+      setZoom(null);
+    };
+    window.addEventListener("hashchange", hash);
+    window.addEventListener("session-expired", expire);
+    return () => {
+      window.removeEventListener("hashchange", hash);
+      window.removeEventListener("session-expired", expire);
+    };
+  }, []);
   const load = useCallback(async (poll = false) => {
     try {
       const [next, sync] = await Promise.all([
@@ -565,102 +510,7 @@ function App() {
       >
         Skip to content
       </a>
-
-      <header className="mobile-header">
-        {location.strategy ? (
-          <>
-            <a href="#/" className="mobile-header-back" aria-label="Back to strategies">
-              <Arrow back />
-              <span>Playbook</span>
-            </a>
-            <div className="mobile-header-title">
-              {strategy?.title ?? "Walkthrough"}
-            </div>
-            <button
-              type="button"
-              className="mobile-header-menu"
-              aria-label="Open categories menu"
-              aria-expanded={drawerOpen}
-              onClick={() => setDrawerOpen(true)}
-            >
-              <MenuIcon />
-            </button>
-          </>
-        ) : (
-          <>
-            <button
-              type="button"
-              className="mobile-header-menu"
-              aria-label="Open categories menu"
-              aria-expanded={drawerOpen}
-              onClick={() => setDrawerOpen(true)}
-            >
-              <MenuIcon />
-            </button>
-            <a className="wordmark" href="#/">
-              Stratdeck
-            </a>
-            <button
-              type="button"
-              className="mobile-category-pill"
-              onClick={() => setDrawerOpen(true)}
-              aria-label="Change category"
-            >
-              <span>
-                {library?.categories.find((c) => c.id === category)?.name ?? "Categories"}
-              </span>
-              <ChevronDown />
-            </button>
-          </>
-        )}
-      </header>
-
-      <div
-        className={`mobile-drawer-backdrop ${drawerOpen ? "open" : ""}`}
-        onClick={() => setDrawerOpen(false)}
-        aria-hidden="true"
-      />
-      <aside
-        className={`mobile-drawer ${drawerOpen ? "open" : ""}`}
-        aria-label="Categories drawer"
-      >
-        <div className="mobile-drawer-head">
-          <span className="wordmark">Stratdeck</span>
-          <button
-            type="button"
-            className="mobile-drawer-close"
-            onClick={() => setDrawerOpen(false)}
-            aria-label="Close categories menu"
-          >
-            <CloseIcon />
-          </button>
-        </div>
-        <nav className="mobile-drawer-nav" aria-label="Categories">
-          <h2>Categories</h2>
-          {library?.categories.map((item) => (
-            <button
-              key={item.id}
-              className={category === item.id ? "selected" : ""}
-              aria-pressed={category === item.id}
-              onClick={() => {
-                setCategory(item.id);
-                navigate();
-                setDrawerOpen(false);
-              }}
-            >
-              <span>{item.name}</span>
-              {category === item.id && <span className="active-dot" aria-hidden="true" />}
-            </button>
-          ))}
-        </nav>
-        <div className="mobile-drawer-foot">
-          <button type="button" onClick={handleSignOut}>
-            Sign out
-          </button>
-        </div>
-      </aside>
-
-      <div className="app-shell">
+      <div className={`app-shell ${location.strategy ? "in-strategy" : "in-library"}`}>
         <aside className="sidebar">
           <a className="wordmark" href="#/">
             Stratdeck
@@ -682,7 +532,23 @@ function App() {
             ))}
           </nav>
           <div className="sidebar-bottom">
-            <button type="button" onClick={handleSignOut}>
+            <button
+              onClick={async () => {
+                try {
+                  await api("/session", { method: "DELETE" });
+                  setAuthenticated(false);
+                  setLibrary(null);
+                  setStrategy(null);
+                  setResults([]);
+                  setQuery("");
+                  setZoom(null);
+                } catch {
+                  setLoadError(
+                    "Unable to sign out. Check your connection and try again.",
+                  );
+                }
+              }}
+            >
               Sign out
             </button>
           </div>
@@ -879,7 +745,7 @@ function App() {
                             {notesSelected ? "Step 1" : "Next step"}
                           </button>
                         </div>
-                        <div className="mobile-step-dock" role="navigation" aria-label="Mobile step navigation">
+                        <div className="mobile-step-dock" role="navigation" aria-label="Step navigation">
                           <button
                             type="button"
                             className="dock-btn"
@@ -945,7 +811,7 @@ function App() {
                           onClick={() => setQuery("")}
                           aria-label="Clear search query"
                         >
-                          <CloseIcon />
+                          ✕
                         </button>
                       )}
                     </div>
