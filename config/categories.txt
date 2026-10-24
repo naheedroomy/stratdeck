@@ -1,7 +1,26 @@
 # Discord categories explicitly selected by the owner
 # Edit this file and push to main to deploy and reconcile the updated selection.
-1555241035922407545
-1520917479654817994
-1516089317808799945
+
+#LOTUS
+1563681961937997844
+
+#SUNSET
 1559541690908545116
+
+#ASCENT
+1516089317808799945
+
+#SPLIT
+1520917479654817994
+
+#CORRODE
+
+
+#SUMMIT
 1562852533368660081
+
+#BIND
+
+
+#ABYSS
+
